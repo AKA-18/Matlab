@@ -1,0 +1,56 @@
+% clearing all variable and workspaces
+clc;
+clear all;
+clear workspace;
+clear all variables;
+
+%declaring the base quations for performing the Jacobi Iteration
+syms x y z
+eqns = [4*x-y+z == 7,
+        4*x-8*y+z == -21,
+        -2*x+y+5*z == 15];
+[A,b] = equationsToMatrix(eqns);
+
+dia_domi=all((2*abs(diag(A)))- sum(abs(A),2)>=0); %checking for diagional dominance
+TF = ismatrix(A) %checking if the input variable A is a Matrix
+while TF == 1
+    if dia_domi==1 
+        disp('The Obtained Matrix A is Diagional Dominant Matrix')
+        D=diag(diag(A)); %creating the diagional matrix with 
+        E=D-A;%Calculating variables for jacobi iteration
+        g=zeros(3,1) %guess values
+        %g=[1;2;2]; %creating the guess values.
+        tol=0.00000001; % declaring the tolernace
+
+        m=inf;%declaring maximum number of iterations
+        k=1; %declaring the starting number of iterations
+        str_vle=k;
+        while k<=m
+            g0=g; %swapping the guess value to a temp variable
+            g = inv(D)*((D-A)*g0+b); %iterating through jacobi approach
+            rel_error = norm(g - g0); %calculating the change    
+            if rel_error<tol %checking if the condition is statisified
+                break %if true breaking out of the loop
+            end
+        fprintf('\n Iteration %i: ',k); % for printing the iteration values inside the loops
+        disp(' ') ;
+        disp('The Coordinates are : '); % for printing the coordinates values inside the loops
+        disp(vpa(g));
+        k=k+1;
+        end_vle=k;
+        end
+        % Logic for printing the final iteration and coordinate value where
+        % converging is happening
+        fprintf('Total iteration required to completed the convergence : %i ',end_vle-str_vle) 
+        disp(' ')
+        disp('The Converging Coordinates are :')
+        fprintf(' %s ',vpa(g))
+    else
+       disp('The Obtained Matrix A is not Diagional Matrix, Kindly provide diagional dominant matrix')
+       break
+    end
+    break
+end
+
+
+
